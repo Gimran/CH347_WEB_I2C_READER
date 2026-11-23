@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>24C08 через WebHID</title>
+  <link rel="stylesheet" href="./style.css">
+  <script type="module" src="./page.mjs"></script>
+</head>
+<body>
+<main>
+  <h1>Чтение EEPROM 24C08</h1>
+  <form>
+    <div class="toolbar">
+      <label>Скорость I²C, кГц
+        <select id="speed">
+          <option value="20">20</option>
+          <option value="100">100</option>
+          <option value="400" selected>400</option>
+          <option value="750">750</option>
+          <option value="1000">1000 (экспериментально)</option>
+        </select>
+      </label>
+      <label>Смещение <input id="offset" value="0x000" required></label>
+      <label>Длина, байт <input id="length" type="number" value="1024" min="1" max="1024" required></label>
+      <button type="button" id="connect">Подключить CH347</button>
+      <button type="submit" id="read" disabled>Прочитать</button>
+      <button type="button" id="save" disabled>Сохранить BIN</button>
+      <label class="auto-label"><input id="auto" type="checkbox"> Авточтение</label>
+      <label>Интервал, с <input id="interval" type="number" value="0.5" min="0.1" step="any" required></label>
+    </div>
+    <p id="status" role="status">Отключите адаптер в WinUI и подключите его здесь.</p>
+  </form>
+  <div class="workspace">
+    <nav class="tabs" role="tablist" aria-label="Разделы EEPROM" aria-orientation="vertical">
+      <button type="button" id="eeprom-tab" role="tab" aria-selected="true" aria-controls="eeprom-panel">EEPROM</button>
+      <button type="button" id="parser-tab" role="tab" aria-selected="false" aria-controls="parser-panel" tabindex="-1">Парсер</button>
+    </nav>
+    <section class="panel" id="eeprom-panel" role="tabpanel" aria-labelledby="eeprom-tab">
+      <h2><label for="hex">HEX-дамп</label></h2>
+      <textarea id="hex" readonly spellcheck="false" wrap="off"></textarea>
+    </section>
+    <section class="panel" id="parser-panel" role="tabpanel" aria-labelledby="parser-tab" hidden>
+    <section aria-labelledby="a0-title">
+      <h2 id="a0-title">A0h · SFP Info</h2>
+      <p id="a0-info">Для A0h прочитайте не менее 96 байт со смещения 0x000.</p>
+      <div id="a0-content"></div>
+    </section>
+    <section aria-labelledby="ddm-title">
+      <h2 id="ddm-title">Thresholds</h2>
+      <p id="ddm-info">Прочитайте дамп с областями A0h и A2h.</p>
+      <div class="ddm-table-wrap">
+        <table id="ddm-table" hidden>
+          <thead><tr>
+            <th>Параметр</th><th>Значение</th><th>Ав. ↑</th><th>Ав. ↓</th>
+            <th>Пред. ↑</th><th>Пред. ↓</th><th>Флаги</th>
+          </tr></thead>
+          <tbody id="ddm-rows"></tbody>
+        </table>
+      </div>
+    </section>
+    </section>
+  </div>
+</main>
+</body>
+</html>

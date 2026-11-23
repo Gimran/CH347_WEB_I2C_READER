@@ -1,0 +1,6 @@
+*.bin
+*.cer
+*.pfx
+*.pem
+.env*
+node_modules/
